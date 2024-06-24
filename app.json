@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "dingo-expo-latest",
-    "slug": "dingo-expo-latest",
+    "slug": "dingo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.finefelines.dingo"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f6c3ceb9-32de-4d43-8cb7-3e001ddadb34"
+      }
+    },
+    "owner": "sunethudayanga"
   }
 }
