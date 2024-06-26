@@ -5,6 +5,8 @@ import signin from './functions/auth/signin';
 
 const index = () => {
   const [clist, setclist] = useState([]);
+  const [userData, setUserData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchList = async () => {
@@ -19,11 +21,24 @@ const index = () => {
     // fetchList();
   });
 
+  
+
+  const handleSignin = async () => {
+    const result = await signin();
+    if (result) {
+      setError(result);
+    } else {
+      setUserData(result);
+      setError(null);
+    }
+    console.log('User data:', result);
+  };
+
   return (
     <View className='flex-1 m-auto justify-center'>
       <Text className='text-xl text-red-700'>index</Text>
       <TouchableOpacity onPress={() => {
-        signin();
+        handleSignin();
         console.log('press');
 
       }}>
@@ -31,6 +46,7 @@ const index = () => {
           <Text className='m-auto'>Click</Text>
         </View>
       </TouchableOpacity>
+      <Text>{userData}</Text>
       
 
     </View>

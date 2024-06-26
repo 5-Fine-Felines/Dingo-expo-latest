@@ -4,10 +4,13 @@ import {
     statusCodes,
   } from '@react-native-google-signin/google-signin'
   import { supabase } from '../../lib/supabase'
+
+
+
   
   export default async function() {
     GoogleSignin.configure({
-      scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+      scopes: ['https://www.googleapis.com/auth/userinfo.profile'],
       webClientId: '81739700104-rdkps922ue2mitk1clrvo46trlv9hsvs.apps.googleusercontent.com',
     })
 
@@ -20,9 +23,12 @@ import {
           token: userInfo.idToken,
         })
         console.log(error, data)
+        return data.user?.email;
       } else {
         throw new Error('no ID token present!')
+        
       }
+      
     } catch (error: any) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         // user cancelled the login flow
@@ -33,6 +39,7 @@ import {
       } else {
         // some other error happened
       }
+      return error.code
     }
   
   }
