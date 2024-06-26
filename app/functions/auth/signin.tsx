@@ -15,8 +15,9 @@ interface SignInResult {
 
 export default async function signin(): Promise<SignInResult | { error: string }> {
   GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/userinfo.profile'],
+    scopes: ['https://www.googleapis.com/auth/drive'],
     webClientId: '81739700104-rdkps922ue2mitk1clrvo46trlv9hsvs.apps.googleusercontent.com',
+    offlineAccess: true,
   });
 
   try {
