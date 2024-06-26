@@ -1,32 +1,24 @@
 import { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { supabase } from './lib/supabase';
 import signin from './functions/auth/signin';
 
+interface UserData {
+  id: string;
+  email: string;
+  last_signin: Date;
+  pictureurl: string;
+}
+
+
 const index = () => {
-  const [clist, setclist] = useState([]);
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchList = async () => {
-      console.log('fetching.....');
-
-      let { data: user, error } = await supabase
-        .from('user')
-        .select('*');
-        console.log(user);
-
-    };
-    // fetchList();
-  });
-
-  
 
   const handleSignin = async () => {
     const result = await signin();
-    if (result) {
-      setError(result);
+    if ('error' in result) {
+      setError(result.error || 'Unknown error occurred');
     } else {
       setUserData(result);
       setError(null);
@@ -35,22 +27,54 @@ const index = () => {
   };
 
   return (
-    <View className='flex-1 m-auto justify-center'>
-      <Text className='text-xl text-red-700'>index</Text>
-      <TouchableOpacity onPress={() => {
-        handleSignin();
-        console.log('press');
-
-      }}>
-        <View className='w-32 bg-blue-300 p-2 justify-center m-auto rounded'>
-          <Text className='m-auto'>Click</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>index</Text>
+      <TouchableOpacity onPress={handleSignin}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Click</Text>
         </View>
       </TouchableOpacity>
-      <Text>{userData}</Text>
-      
-
+      {userData ? (
+        <View>
+          <Text>ID: {userData.id}</Text>
+          <Text>Email: {userData.email}</Text>
+          <Text>Last Sign-in: {userData.last_signin.toString()}</Text>
+          <Text>Picture URL: {userData.pictureurl}</Text>
+        </View>
+      ) : (
+        <Text>No user data</Text>
+      )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
-  )
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto',
+  },
+  title: {
+    fontSize: 20,
+    color: 'red',
+  },
+  button: {
+    width: 128,
+    backgroundColor: 'blue',
+    padding: 8,
+    justifyContent: 'center',
+    margin: 'auto',
+    borderRadius: 8,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+  },
+  errorText: {
+    color: 'red',
+  },
+});
 
 export default index
