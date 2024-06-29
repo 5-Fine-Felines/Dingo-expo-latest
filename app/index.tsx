@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { supabase } from './lib/supabase';
 import signin from './functions/auth/signin';
+import { MyButton } from './functions/auth/signin2'
 
 interface UserData {
   id: string;
@@ -29,11 +30,14 @@ const index = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>index</Text>
-      <TouchableOpacity onPress={handleSignin}>
+      <TouchableOpacity onPress={() => {
+        // _sigIn();
+      }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Click</Text>
         </View>
       </TouchableOpacity>
+      <MyButton />
       {userData ? (
         <View>
           <Text>ID: {userData.id}</Text>

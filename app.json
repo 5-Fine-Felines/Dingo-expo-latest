@@ -16,6 +16,7 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -47,6 +48,6 @@
         "projectId": "f6c3ceb9-32de-4d43-8cb7-3e001ddadb34"
       }
     },
-    "owner": "sunethudayanga"
+    "owner": "fine_felines"
   }
 }
