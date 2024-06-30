@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "714952557855",
+    "project_id": "expo-dingo",
+    "storage_bucket": "expo-dingo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714952557855:android:792fa9cd3ffef67a2fdc2a",
+        "android_client_info": {
+          "package_name": "com.finefelines.dingo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714952557855-jigketilaibr6qf8782ub4bq2laaekbg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.finefelines.dingo",
+            "certificate_hash": "adeff7421a967b59553f0c28ec9cfc1610875da9"
+          }
+        },
+        {
+          "client_id": "714952557855-ajpi4eanfuasc0987846ouds4sp7drbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBwEC9yFrMkuNwQ52OqZrdJeAKFWl7WGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714952557855-ajpi4eanfuasc0987846ouds4sp7drbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,32 +1,41 @@
-import { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { supabase } from './lib/supabase';
-import signin from './functions/auth/signin';
-import { MyButton } from './functions/auth/signin2'
+import { View, Text, TouchableOpacity, StyleSheet, Button, Image, Alert } from 'react-native'
+import onGoogleButtonPress from './functions/auth/signin2';
+import { useState } from 'react';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-interface UserData {
-  id: string;
+type UserInfo = {
   email: string;
-  last_signin: Date;
-  pictureurl: string;
-}
-
+  name: string | null;
+  id: string;
+  photo: string | null;
+};
 
 const index = () => {
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSignin = async () => {
-    const result = await signin();
-    if ('error' in result) {
-      setError(result.error || 'Unknown error occurred');
-    } else {
-      setUserData(result);
-      setError(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const UserInfo = await onGoogleButtonPress();
+      setUser(UserInfo.user);
+    } catch (error) {
+      console.error('Google Sign-In error:', error);
     }
-    console.log('User data:', result);
   };
 
+  const handleSignout = async() => {
+    try {
+      await GoogleSignin.signOut();
+    } catch (error) {
+      console.log('Sign out error: ', error);
+
+    }
+  }
+
+
+
+
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>index</Text>
@@ -37,18 +46,21 @@ const index = () => {
           <Text style={styles.buttonText}>Click</Text>
         </View>
       </TouchableOpacity>
-      <MyButton />
-      {userData ? (
-        <View>
-          <Text>ID: {userData.id}</Text>
-          <Text>Email: {userData.email}</Text>
-          <Text>Last Sign-in: {userData.last_signin.toString()}</Text>
-          <Text>Picture URL: {userData.pictureurl}</Text>
-        </View>
+      <View>
+      {user ? (
+        <>
+          <Text>Email: {user.email}</Text>
+          <Text>Name: {user.name}</Text>
+          <Text>ID: {user.id}</Text>
+          {user.photo && <Image source={{ uri: user.photo }} style={{ width: 100, height: 100 }} />}
+        </>
       ) : (
-        <Text>No user data</Text>
+        <Button title="Sign in with Google" onPress={handleGoogleSignIn} />
+        
       )}
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      <Button title='Signout' onPress={handleSignout} />
+    </View>
+      
     </View>
   );
 }
