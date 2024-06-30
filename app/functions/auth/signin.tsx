@@ -1,59 +1,39 @@
-import {
-  GoogleSignin,
-  statusCodes,
-  User as GoogleUser,
-} from '@react-native-google-signin/google-signin';
-import { supabase } from '../../lib/supabase';
+// SignInButton.js
+import auth from '@react-native-firebase/auth';
+import { GoogleSignin, isErrorWithCode, statusCodes } from '@react-native-google-signin/google-signin';
 
-interface SignInResult {
-  id: string;
-  email: string;
-  last_signin: Date;
-  pictureurl: string;
-  error?: string;
-}
 
-export default async function signin(): Promise<SignInResult | { error: string }> {
-  GoogleSignin.configure({
-    scopes: ['https://www.googleapis.com/auth/drive'],
-    webClientId: '81739700104-rdkps922ue2mitk1clrvo46trlv9hsvs.apps.googleusercontent.com',
-    offlineAccess: true,
-  });
+type UserInfo = {
+    email: string;
+    name: string | null;
+    id: string;
+    photo: string | null;
+  };
 
-  try {
-    await GoogleSignin.hasPlayServices();
+GoogleSignin.configure({
+    webClientId: '714952557855-ajpi4eanfuasc0987846ouds4sp7drbc.apps.googleusercontent.com',
+});
+
+
+export default async function onGoogleButtonPress() {
+    // Check if your device supports Google Play
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    // Get the user's ID token and other info
     const userInfo = await GoogleSignin.signIn();
-    if (userInfo.idToken) {
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: 'google',
-        token: userInfo.idToken,
-      });
-
-      if (error) {
-        return { error: error.message };
-      }
-
-      const user = data?.user;
-      return {
-        id: user?.id || '',
-        email: user?.email || userInfo.user.email || 'No email',
-        last_signin: new Date(user?.last_sign_in_at || Date.now()), // Default to current date/time if undefined
-        pictureurl: userInfo.user.photo || '', // Use photo from Google userInfo
-      };
-    } else {
-      throw new Error('no ID token present!');
-    }
-  } catch (error: any) {
-    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-      // user cancelled the login flow
-    } else if (error.code === statusCodes.IN_PROGRESS) {
-      // operation (e.g. sign in) is in progress already
-    } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-      // play services not available or outdated
-    } else {
-      // some other error happened
-      console.error(error);
-    }
-    return { error: error.message || 'An unknown error occurred' };
+  
+    // Extract the user info
+    const { idToken, user } = userInfo;
+    // const { email, name, id, photo } = user;
+  
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  
+    // Sign-in the user with the credential
+    await auth().signInWithCredential(googleCredential);
+  
+    // Return the user info
+    return { user };
   }
-}
+
+
+
