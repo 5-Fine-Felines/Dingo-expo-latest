@@ -4,49 +4,53 @@ import React, { useState } from 'react'
 import { Border, Color, FontFamily, FontSize } from '@/app/GlobalStyles'
 import IMAGES from '@/assets/images'
 import onGoogleButtonPress from '@/app/functions/auth/signin'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRouter } from 'expo-router'
 
-// type UserInfo = {
-//     email: string;
-//     name: string | null;
-//     id: string;
-//     photo: string | null;
+type UserInfo = {
+    email: string;
+    name: string | null;
+    id: string;
+    photo: string | null;
 
-// };
+};
 
 
 const index = () => {
-    // const [loading, setLoading] = useState(false);
-    // const [user, setUser] = useState<UserInfo | null>(null);
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState<UserInfo | null>(null);
 
-    // const handleGoogleSignIn = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const UserInfo = await onGoogleButtonPress();
-    //         setUser(UserInfo.user);
-    //     } catch (error) {
-    //         console.error('Google Sign-In error:', error);
-    //     }
-    //     setLoading(false);
-    // };
-
-
+    const handleLogin = async () => {
+        try {
+          const UserInfo = await onGoogleButtonPress();
+          const userInfoJSON = await AsyncStorage.getItem('user');
+          if (userInfoJSON) {
+            router.replace('../../screens/ScreenHome');
+          } else {
+            console.log('No user info found in storage.');
+          }
+        } catch (error) {
+          console.error('Error retrieving user info from storage:', error);
+        }
+      };
 
     return (
         <View style={styles.createAnAccount}>
-            {/* <Image
+            <Image
                 style={styles.goodDoggyBro1}
                 contentFit="cover"
                 source={require("../../../assets/images/good-doggybro-1.png")}
-            /> */}
-            {/* {loading && (
+            />
+            {loading && (
                 <View style={styles.loadingOverlay}>
                     <ActivityIndicator size="large" color={Color.colorDarkorange} />
                 </View>
             )}
             <View style={[styles.rectangleParent]}>
                 <View style={[styles.createLayout]}>
-                    <TouchableOpacity onPress={() => {
-                        // handleGoogleSignIn;
+                    <TouchableOpacity delayPressIn={0} onPress={() => {
+                        handleLogin();
                     }} disabled={loading}>
                         <View style={[styles.frameChild, styles.frameBg]} />
                     </TouchableOpacity>
@@ -55,31 +59,31 @@ const index = () => {
                     <Text style={[styles.login, styles.loginTypo]}>SignIn with Google</Text>
                 </View>
 
-            </View> */}
+            </View>
 
             {/* <View style={[styles.emailInner, styles.createLayout]}>
-        <View style={[styles.frameItem, styles.frameItemLayout]} />
-      </View>
-      <View style={[styles.passwordInner, styles.createLayout]}>
-        <View style={[styles.frameItem, styles.frameItemLayout]} />
-      </View>
-      
-      <TextInput
-        // onChangeText={(text) => setEmail(text)}
-        // value={email}
-        placeholder="Email Address"
-        autoCapitalize='none'
-        style={[styles.emailAddress, styles.dingoPosition]}
-      />
-      <TextInput
-        // onChangeText={(text) => setPassword(text)}
-        // value={password}
-        secureTextEntry
-        placeholder="Password"
-        autoCapitalize='none'
-        style={[styles.password, styles.dingoPosition]}
-      /> */}
-            {/* <Image
+                <View style={[styles.frameItem, styles.frameItemLayout]} />
+            </View>
+            <View style={[styles.passwordInner, styles.createLayout]}>
+                <View style={[styles.frameItem, styles.frameItemLayout]} />
+            </View>
+
+            <TextInput
+                // onChangeText={(text) => setEmail(text)}
+                // value={email}
+                placeholder="Email Address"
+                autoCapitalize='none'
+                style={[styles.emailAddress, styles.dingoPosition]}
+            />
+            <TextInput
+                // onChangeText={(text) => setPassword(text)}
+                // value={password}
+                secureTextEntry
+                placeholder="Password"
+                autoCapitalize='none'
+                style={[styles.password, styles.dingoPosition]}
+            /> */}
+            <Image
                 style={styles.ellipseIcon}
                 contentFit="cover"
                 source={require("../../../assets/images/ellipse-22.png")}
@@ -88,7 +92,7 @@ const index = () => {
                 style={styles.groupIcon}
                 contentFit="cover"
                 source={require("../../../assets/images/group-70.png")}
-            /> */}
+            />
             {/* <Image
         style={[styles.mailIcon, styles.iconLayout]}
         contentFit="cover"
@@ -119,12 +123,12 @@ const index = () => {
           Forget Password?
         </Text>
       </View> */}
-            {/* <Image
+            <Image
                 style={styles.oolzfw0RemovebgPreview1Icon}
                 contentFit="cover"
                 source={require("../../../assets/images/oolzfw0removebgpreview-11.png")}
             />
-            <Text style={[styles.dingo, styles.dingoPosition]}>D I N G O</Text> */}
+            <Text style={[styles.dingo, styles.dingoPosition]}>D I N G O</Text>
         </View>
     )
 }
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
         fontWeight: "500",
     },
     rectangleParent: {
-        top: 507,
+        top: 657,
         width: 318,
         borderRadius: Border.br_81xl,
         left: 40,
@@ -336,7 +340,7 @@ const styles = StyleSheet.create({
         position: "absolute",
     },
     dingo: {
-        top: 380,
+        top: 400,
         lineHeight: 48,
         fontWeight: "800",
         fontFamily: FontFamily.poppinsExtraBold,
@@ -384,4 +388,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default index
+export default index;
