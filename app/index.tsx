@@ -1,14 +1,25 @@
 import { View, Text, TouchableOpacity, StyleSheet, Button, Image, Alert } from 'react-native'
-import onGoogleButtonPress from './functions/auth/signin2';
+import onGoogleButtonPress, { userDataToSupabase } from './functions/auth/signin';
 import { useState } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 type UserInfo = {
   email: string;
   name: string | null;
   id: string;
   photo: string | null;
+  
 };
+
+const userInfo = {
+  id: '12475465654654566665465654685',
+  email:'wqewq@gmail.com',
+  name:'sdsgjhjggds sfd',
+  photo:'asdsdsds.com',
+  
+}
 
 const index = () => {
 
@@ -32,6 +43,24 @@ const index = () => {
     }
   }
 
+  const handleLogin = async () => {
+    try {
+      const UserInfo = await onGoogleButtonPress();
+      const userInfoJSON = await AsyncStorage.getItem('user');
+      if (userInfoJSON) {
+        const userInfo = JSON.parse(userInfoJSON);
+        // Handle the user info (e.g., set it to state)
+        setUser(userInfo);
+        console.log(userInfo); // Replace this with your state-setting logic
+      } else {
+        console.log('No user info found in storage.');
+      }
+    } catch (error) {
+      console.error('Error retrieving user info from storage:', error);
+    }
+  };
+  
+
 
 
 
@@ -39,14 +68,15 @@ const index = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>index</Text>
-      <TouchableOpacity onPress={() => {
-        // _sigIn();
+      <TouchableOpacity onPress={async () => {
+        await userDataToSupabase(userInfo);
       }}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Click</Text>
         </View>
       </TouchableOpacity>
       <View>
+        { }
       {user ? (
         <>
           <Text>Email: {user.email}</Text>
@@ -55,7 +85,7 @@ const index = () => {
           {user.photo && <Image source={{ uri: user.photo }} style={{ width: 100, height: 100 }} />}
         </>
       ) : (
-        <Button title="Sign in with Google" onPress={handleGoogleSignIn} />
+        <Button title="Sign in with Google" onPress={handleLogin} />
         
       )}
       <Button title='Signout' onPress={handleSignout} />
