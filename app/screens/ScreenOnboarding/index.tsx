@@ -2,9 +2,11 @@ import React from 'react';
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { FontSize, Color, FontFamily, Border } from "@/app/GlobalStyles";
+import { useRouter } from 'expo-router';
 
 
 const index = () => {
+  const router = useRouter(router.replace("../../screens/ScreenSignin"))
   return (
     <Pressable
     style={styles.splash}
