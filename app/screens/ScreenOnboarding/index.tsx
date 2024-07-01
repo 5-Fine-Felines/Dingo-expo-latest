@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 
 
 const index = () => {
-  const router = useRouter(router.replace("../../screens/ScreenSignin"))
+  /* const router = useRouter(router.replace("../../screens/ScreenSignin)) */
   return (
     <Pressable
     style={styles.splash}
