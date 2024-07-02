@@ -1,28 +1,40 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Image } from "expo-image"
+import { Image, StyleSheet } from "react-native";
 import IMAGES from "@/assets/images";
 
 export default function TabLayout() {
     return (
-        <Tabs screenOptions={{
-            tabBarActiveTintColor: 'blue', 
-            tabBarShowLabel: false, 
-            tabBarStyle: {
-                borderTopLeftRadius: 32,
-                borderTopRightRadius: 32,
-                height: 72,
-                paddingHorizontal: 36,
-                backgroundColor: '#ff8c00',
-            }
-        }}>
+        <Tabs
+            initialRouteName="UserHome"
+            screenOptions={{
+                tabBarActiveTintColor: 'blue',
+                tabBarInactiveTintColor: 'gray',
+                tabBarIconStyle: {
+                    width: 50,
+                    height: 20,
+                },
+                tabBarShowLabel: false,
+                tabBarStyle: {
+                    borderTopLeftRadius: 32,
+                    borderTopRightRadius: 32,
+                    height: 68,
+                    paddingHorizontal: 26,
+                    backgroundColor: '#ff8c00',
+                },
+            }}
+        >
             <Tabs.Screen
                 name="UserHome"
                 options={{
                     title: 'Home',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Image source={IMAGES.NAVHOME} />),
+                        <Image 
+                            source={IMAGES.NAVHOME} 
+                            style={[styles.icon, focused && styles.iconFocused]} 
+                        />
+                    ),
                 }}
             />
             <Tabs.Screen
@@ -31,7 +43,10 @@ export default function TabLayout() {
                     title: 'Search',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Image source={IMAGES.NAVSEARCH} />
+                        <Image 
+                            source={IMAGES.NAVSEARCH} 
+                            style={[styles.icon, focused && styles.iconFocused]} 
+                        />
                     ),
                 }}
             />
@@ -41,7 +56,10 @@ export default function TabLayout() {
                     title: 'Feed',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Image source={IMAGES.NAVFEED} />
+                        <Image 
+                            source={IMAGES.NAVFEED} 
+                            style={[styles.icon, focused && styles.iconFocused]} 
+                        />
                     ),
                 }}
             />
@@ -51,10 +69,24 @@ export default function TabLayout() {
                     title: 'Library',
                     headerShown: false,
                     tabBarIcon: ({ focused }) => (
-                        <Image source={IMAGES.NAVLIBRARY} />
+                        <Image 
+                            source={IMAGES.NAVLIBRARY} 
+                            style={[styles.icon, focused && styles.iconFocused]} 
+                        />
                     ),
                 }}
             />
         </Tabs>
     );
 }
+
+const styles = StyleSheet.create({
+    icon: {
+        width: 28, // Adjust as needed
+        height: 28, // Adjust as needed
+        opacity: 0.4, // Default opacity for inactive tabs
+    },
+    iconFocused: {
+        opacity: 1, // Full opacity for active tabs
+    },
+});
