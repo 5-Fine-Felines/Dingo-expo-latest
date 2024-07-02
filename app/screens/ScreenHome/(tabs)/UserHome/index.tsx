@@ -1,10 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { Stack } from 'expo-router'
+import SearchBar from '../../components/common/SearchBar';
 
-
-
-import SearchBar from '@/app/screens/ScreenHome/components/SearchBar';
 
 
 
@@ -19,22 +17,17 @@ const index = () => {
 
     <View>
       <Stack.Screen options={{ headerShown:false}} />
+      <SearchBar 
+              searchText={searchText} 
+              setSearchText={setSearchText} 
+              handleSearch={handleSearch} 
+          />
       <Text>index</Text>
     </View>
   )
 }
 
-      <View style={styles.container}>
-        <HeaderBar/>
-          <SearchBar 
-              searchText={searchText} 
-              setSearchText={setSearchText} 
-              handleSearch={handleSearch} 
-          />
-          {/* Other components or content for UserHome */}
-      </View>
-  );
-};
+
 
 const styles = StyleSheet.create({
   container: {
