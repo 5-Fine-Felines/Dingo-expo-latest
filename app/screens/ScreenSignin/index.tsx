@@ -32,12 +32,12 @@ const index = () => {
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<UserInfo | null>(null);
 
-    useEffect(() => {
-        const storeUserInfo = async () => {
-            await AsyncStorage.setItem('user', JSON.stringify(userInfo));
-        };
-        storeUserInfo();
-    }, []);
+    // useEffect(() => {
+    //     const storeUserInfo = async () => {
+    //         await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+    //     };
+    //     storeUserInfo();
+    // }, []);
 
     const handleLogin = async () => {
         try {
@@ -65,14 +65,10 @@ const index = () => {
                     <ActivityIndicator size="large" color={Color.colorDarkorange} />
                 </View>
             )}
-            <Pressable onPress={() => {
+            <Pressable onPress={async () => {
                 setLoading(true);
-
-                
-
-
-                router.push('../../screens/ScreenHome')
-                // await handleLogin();
+                // router.push('../../screens/ScreenHome')
+                await handleLogin();
                 setLoading(false);
             }} disabled={loading}>
                 <View style={[styles.rectangleParent]}>

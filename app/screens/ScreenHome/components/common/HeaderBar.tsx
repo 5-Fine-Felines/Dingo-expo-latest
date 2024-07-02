@@ -16,19 +16,19 @@ const HeaderBar = () => {
   const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    const storeUserInfo = async () => {
+    const getUserInfo = async () => {
       const userInfoJSON = await AsyncStorage.getItem('user');
       if (userInfoJSON) {
         const userInfo = JSON.parse(userInfoJSON);
         // Handle the user info (e.g., set it to state)
         setUser(userInfo);
-        console.log(userInfo); // Replace this with your state-setting logic
+        // console.log(userInfo); // Replace this with your state-setting logic
       } else {
         console.log('No user info found in storage.');
         
       }
     };
-    storeUserInfo();
+    getUserInfo();
 }, []);
 
  
