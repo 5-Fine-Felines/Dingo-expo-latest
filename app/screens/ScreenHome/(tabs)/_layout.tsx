@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     icon: {
         width: 28, // Adjust as needed
         height: 28, // Adjust as needed
-        opacity: 0.5, // Default opacity for inactive tabs
+        opacity: 0.4, // Default opacity for inactive tabs
     },
     iconFocused: {
         opacity: 1, // Full opacity for active tabs
