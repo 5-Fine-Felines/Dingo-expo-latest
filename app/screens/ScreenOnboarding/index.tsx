@@ -18,24 +18,25 @@ const index = () => {
                 contentFit="cover"
                 source={require("@/assets/images/oolzfw0removebgpreview-1.png")}
             />
+              <Pressable onPress={() => {
+                router.replace("../../screens/ScreenSignin")
+            }}>
             <Image
                 style={styles.splashItem}
                 contentFit="cover"
                 source={require("@/assets/images/rectangle-1.png")}
             />
-            <Pressable onPress={() => {
-                router.replace("../../screens/ScreenSignin")
-            }}>
-            <Text
-                style={[styles.getStarted, styles.getStartedTypo]}
-            >{`get started >`}</Text>
+          
+                <Text
+                    style={[styles.getStarted, styles.getStartedTypo]}
+                >{`get started >`}</Text>
 
             </Pressable>
-            
+
             <Text style={[styles.heyWelcome, styles.getStartedTypo]}>
                 hey! welcome
             </Text>
-            
+
 
         </View>
 
