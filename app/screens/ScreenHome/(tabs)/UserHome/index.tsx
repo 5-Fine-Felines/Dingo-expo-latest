@@ -1,8 +1,10 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { Stack } from 'expo-router'
-import SearchBar from '@/app/screens/ScreenHome/components/SearchBar';
-import HeaderBar from '@/app/screens/ScreenHome/components/HeaderBar';
+import SearchBar from '../../components/common/SearchBar';
+
+
+
 
 const index = () => {
   const [searchText, setSearchText] = useState<string>('');
@@ -12,17 +14,20 @@ const index = () => {
   };
 
   return (
-      <View style={styles.container}>
-        <HeaderBar/>
-          <SearchBar 
+
+    <View>
+      <Stack.Screen options={{ headerShown:false}} />
+      <SearchBar 
               searchText={searchText} 
               setSearchText={setSearchText} 
               handleSearch={handleSearch} 
           />
-          {/* Other components or content for UserHome */}
-      </View>
-  );
-};
+      <Text>index</Text>
+    </View>
+  )
+}
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -31,5 +36,6 @@ const styles = StyleSheet.create({
       backgroundColor: '#f5f5f5',
   },
 });
+
 
 export default index;
