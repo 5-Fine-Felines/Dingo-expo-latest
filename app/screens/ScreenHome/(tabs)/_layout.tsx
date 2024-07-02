@@ -1,10 +1,15 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import IMAGES from "@/assets/images";
+import HeaderBar from "../components/common/HeaderBar";
+
+
 
 export default function TabLayout() {
     return (
+        <View style={{ flex:1}}>
+            <HeaderBar />
         <Tabs
             initialRouteName="UserHome"
             screenOptions={{
@@ -77,6 +82,7 @@ export default function TabLayout() {
                 }}
             />
         </Tabs>
+        </View>
     );
 }
 

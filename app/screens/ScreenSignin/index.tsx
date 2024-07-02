@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ActivityIndicator, Pressable, TextInput, Touchable, TouchableOpacity } from 'react-native'
 import { Image } from 'expo-image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Border, Color, FontFamily, FontSize } from '@/app/GlobalStyles'
 import IMAGES from '@/assets/images'
 import onGoogleButtonPress from '@/app/functions/auth/signin'
@@ -16,10 +16,28 @@ type UserInfo = {
 };
 
 
+// sample data
+const userInfo = {
+    id: '12475465654654566665465654685',
+    email:'wqewq@gmail.com',
+    name:'sdsgjhjggds sfd',
+    photo:'asdsdsds.com',
+    
+  }
+
+
+
 const index = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<UserInfo | null>(null);
+
+    useEffect(() => {
+        const storeUserInfo = async () => {
+            await AsyncStorage.setItem('user', JSON.stringify(userInfo));
+        };
+        storeUserInfo();
+    }, []);
 
     const handleLogin = async () => {
         try {
@@ -47,8 +65,12 @@ const index = () => {
                     <ActivityIndicator size="large" color={Color.colorDarkorange} />
                 </View>
             )}
-            <Pressable onPress={async () => {
+            <Pressable onPress={() => {
                 setLoading(true);
+
+                
+
+
                 router.push('../../screens/ScreenHome')
                 // await handleLogin();
                 setLoading(false);
