@@ -23,17 +23,17 @@ const index = () => {
 
     const handleLogin = async () => {
         try {
-          const UserInfo = await onGoogleButtonPress();
-          const userInfoJSON = await AsyncStorage.getItem('user');
-          if (userInfoJSON) {
-            router.replace('../../screens/ScreenHome');
-          } else {
-            console.log('No user info found in storage.');
-          }
+            const UserInfo = await onGoogleButtonPress();
+            const userInfoJSON = await AsyncStorage.getItem('user');
+            if (userInfoJSON) {
+                router.replace('../../screens/ScreenHome');
+            } else {
+                console.log('No user info found in storage.');
+            }
         } catch (error) {
-          console.error('Error retrieving user info from storage:', error);
+            console.error('Error retrieving user info from storage:', error);
         }
-      };
+    };
 
     return (
         <View style={styles.createAnAccount}>
@@ -47,19 +47,24 @@ const index = () => {
                     <ActivityIndicator size="large" color={Color.colorDarkorange} />
                 </View>
             )}
-            <View style={[styles.rectangleParent]}>
-                <View style={[styles.createLayout]}>
-                    <TouchableOpacity delayPressIn={0} onPress={() => {
-                        handleLogin();
-                    }} disabled={loading}>
-                        <View style={[styles.frameChild, styles.frameBg]} />
-                    </TouchableOpacity>
-                    <Image style={{ width: 25, height: 25, left: 50, top: 10 }}
-                        contentFit="cover" source={IMAGES.GOOGLEICON} />
-                    <Text style={[styles.login, styles.loginTypo]}>SignIn with Google</Text>
-                </View>
+            <Pressable onPress={async () => {
+                setLoading(true);
+                router.push('../../screens/ScreenHome')
+                // await handleLogin();
+                setLoading(false);
+            }} disabled={loading}>
+                <View style={[styles.rectangleParent]}>
+                    <View style={[styles.createLayout]}>
 
-            </View>
+                        <View style={[styles.frameChild, styles.frameBg]} />
+
+                        <Image style={{ width: 25, height: 25, left: 50, top: 10 }}
+                            contentFit="cover" source={IMAGES.GOOGLEICON} />
+                        <Text style={[styles.login, styles.loginTypo]}>SignIn with Google</Text>
+                    </View>
+
+                </View>
+            </Pressable>
 
             {/* <View style={[styles.emailInner, styles.createLayout]}>
                 <View style={[styles.frameItem, styles.frameItemLayout]} />

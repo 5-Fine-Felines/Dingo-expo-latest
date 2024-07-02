@@ -23,14 +23,14 @@ const index = () => {
                 contentFit="cover"
                 source={require("@/assets/images/rectangle-1.png")}
             />
-            <TouchableOpacity onPress={() => {
+            <Pressable onPress={() => {
                 router.replace("../../screens/ScreenSignin")
             }}>
             <Text
                 style={[styles.getStarted, styles.getStartedTypo]}
             >{`get started >`}</Text>
 
-            </TouchableOpacity>
+            </Pressable>
             
             <Text style={[styles.heyWelcome, styles.getStartedTypo]}>
                 hey! welcome
