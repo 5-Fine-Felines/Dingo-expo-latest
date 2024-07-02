@@ -1,4 +1,4 @@
-rootProject.name = 'dingo-expo-latest'
+rootProject.name = 'Dingo'
 
 dependencyResolutionManagement {
   versionCatalogs {
