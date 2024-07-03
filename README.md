@@ -41,6 +41,6 @@ Welcome to the Pet Care App! This application, built with React Native and Expo 
  - Ushmika Kavishan
  - Rashmika Malshani
  - Charitha Bandara
- - Fathima Asma
+ - Asma Rafeek
  - Oshan Kalhara
  - Dinuja Kelum
