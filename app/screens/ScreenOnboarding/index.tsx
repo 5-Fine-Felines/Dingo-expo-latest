@@ -8,6 +8,24 @@ import { router, useRouter } from 'expo-router';
 const index = () => {
     const router = useRouter();
     return (
+
+        // <View style={styles.container}>
+        //     <Image
+        //         source={require("@/assets/images/oolzfw0removebgpreview-1.png")} // Replace with your logo URL
+        //         style={styles.logo}
+        //     />
+        //     <Text style={styles.title}>DINGO</Text>
+        //     <Text style={styles.subtitle}>Hey! Welcome</Text>
+        //     <TouchableOpacity style={styles.button} onPress={() => router.replace("../../screens/ScreenSignin")}>
+        //         <Text style={styles.buttonText}>GET STARTED ></Text>
+        //     </TouchableOpacity>
+        //     <Text style={styles.footer}>FineFelines</Text>
+        // </View>
+
+
+
+
+
         <View style={styles.splash}>
             <View style={styles.splashChild} />
             <Text style={styles.dingo}>D I N G O</Text>
@@ -18,20 +36,22 @@ const index = () => {
                 contentFit="cover"
                 source={require("@/assets/images/oolzfw0removebgpreview-1.png")}
             />
-              <Pressable onPress={() => {
+            <View>
+            <TouchableOpacity onPress={() => {
                 router.replace("../../screens/ScreenSignin")
             }}>
-            <Image
-                style={styles.splashItem}
-                contentFit="cover"
-                source={require("@/assets/images/rectangle-1.png")}
-            />
-          
+                <Image
+                    style={styles.splashItem}
+                    contentFit="cover"
+                    source={require("@/assets/images/rectangle-1.png")}
+                />
+
                 <Text
                     style={[styles.getStarted, styles.getStartedTypo]}
                 >{`get started >`}</Text>
 
-            </Pressable>
+            </TouchableOpacity>
+            </View>
 
             <Text style={[styles.heyWelcome, styles.getStartedTypo]}>
                 hey! welcome
@@ -42,6 +62,49 @@ const index = () => {
 
     );
 };
+
+// const styles = StyleSheet.create({
+//     container: {
+//       flex: 1,
+//       justifyContent: 'center',
+//       alignItems: 'center',
+//       backgroundColor: '#fff',
+//       padding: 20,
+//     },
+//     logo: {
+//       width: 100,
+//       height: 100,
+//       marginBottom: 20,
+//     },
+//     title: {
+//       fontSize: 36,
+//       fontWeight: 'bold',
+//       marginBottom: 10,
+//     },
+//     subtitle: {
+//       fontSize: 16,
+//       color: '#555',
+//       marginBottom: 40,
+//     },
+//     button: {
+//       backgroundColor: '#FFA500',
+//       paddingVertical: 10,
+//       paddingHorizontal: 30,
+//       borderRadius: 20,
+//       marginBottom: 40,
+//       alignItems: 'center',
+//     },
+//     buttonText: {
+//       color: '#fff',
+//       fontSize: 18,
+//     },
+//     footer: {
+//       fontSize: 14,
+//       color: '#777',
+//     },
+//   });
+  
+  
 
 const styles = StyleSheet.create({
     getStartedTypo: {
