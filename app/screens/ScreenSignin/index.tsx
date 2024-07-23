@@ -65,14 +65,10 @@ const index = () => {
                     <ActivityIndicator size="large" color={Color.colorDarkorange} />
                 </View>
             )}
-            <Pressable onPress={() => {
+            <Pressable onPress={async () => {
                 setLoading(true);
-
-                
-
-
-                router.push('../../screens/ScreenHome')
-                // await handleLogin();
+                // router.push('../../screens/ScreenHome')
+                await handleLogin();
                 setLoading(false);
             }} disabled={loading}>
                 <View style={[styles.rectangleParent]}>
@@ -87,29 +83,7 @@ const index = () => {
 
                 </View>
             </Pressable>
-
-            {/* <View style={[styles.emailInner, styles.createLayout]}>
-                <View style={[styles.frameItem, styles.frameItemLayout]} />
-            </View>
-            <View style={[styles.passwordInner, styles.createLayout]}>
-                <View style={[styles.frameItem, styles.frameItemLayout]} />
-            </View>
-
-            <TextInput
-                // onChangeText={(text) => setEmail(text)}
-                // value={email}
-                placeholder="Email Address"
-                autoCapitalize='none'
-                style={[styles.emailAddress, styles.dingoPosition]}
-            />
-            <TextInput
-                // onChangeText={(text) => setPassword(text)}
-                // value={password}
-                secureTextEntry
-                placeholder="Password"
-                autoCapitalize='none'
-                style={[styles.password, styles.dingoPosition]}
-            /> */}
+        
             <Image
                 style={styles.ellipseIcon}
                 contentFit="cover"
@@ -120,36 +94,7 @@ const index = () => {
                 contentFit="cover"
                 source={require("../../../assets/images/group-70.png")}
             />
-            {/* <Image
-        style={[styles.mailIcon, styles.iconLayout]}
-        contentFit="cover"
-        source={require("../../../assets/images/mail.png")}
-      />
-      <Image
-        style={[styles.lockIcon, styles.iconLayout]}
-        contentFit="cover"
-        source={require("../../../assets/images/lock.png")}
-      /> */}
-
-            {/* <View style={{ width: '100%', alignItems: "center", top: 500 }}>
-        <View style={styles.subtractIcon}>
-          <Pressable
-            onPress={() => {
-            //   navigation.navigate(SCREENS.USERHOME);
-            }}
-            disabled={loading}
-            style={styles.nextButton}
-          >
-            <Text style={styles.nextButtonText}>Next</Text>
-          </Pressable>
-        </View>
-      </View> */}
-
-            {/* <View style={[styles.forgetPasswordWrapper, styles.forgetLayout]}>
-        <Text style={[styles.forgetPassword, styles.forgetLayout]}>
-          Forget Password?
-        </Text>
-      </View> */}
+      
             <Image
                 style={styles.oolzfw0RemovebgPreview1Icon}
                 contentFit="cover"
@@ -189,8 +134,8 @@ const styles = StyleSheet.create({
         fontFamily: FontFamily.fredokaRegular,
     },
     dingoPosition: {
-        left: 90,
-        fontSize: FontSize.size_xl,
+        left: 55,
+        fontSize: 34,
         position: "absolute",
     },
     iconLayout: {
@@ -370,9 +315,10 @@ const styles = StyleSheet.create({
         top: 400,
         lineHeight: 48,
         fontWeight: "800",
+        fontSize:24,
         fontFamily: FontFamily.poppinsExtraBold,
         textAlign: "center",
-        color: Color.colorBlack,
+        color: "#4d4d4d",
         marginLeft: 60,
     },
     createAnAccount: {

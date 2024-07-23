@@ -1,8 +1,53 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native';
+
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, TextInput, FlatList } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import SearchBar from "../../components/common/SearchBar";
 import { Stack } from 'expo-router'
+import { Image } from 'expo-image';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import addpet from '@/app/functions/petOption/addpet';
+import ContentLoader, { Circle, Rect } from 'react-content-loader/native';
+import fetchPetsData from '@/app/functions/petOption/getownerpet';
+import ReminderButton from './ExtraComponent/AddReminder';
+
+type UserInfo = {
+  email: string;
+  name: string | null;
+  id: string | null;
+  photo: string | null;
+
+};
+
+interface Vaccination {
+  name: string;
+  date: string;
+  status: string;
+}
+
+interface Pet {
+  id: string;
+  name: string;
+  status: string;
+  breed: string;
+  birthday: string;
+  age: string;
+  vaccinationDetails: string;
+  notes: string;
+  vaccinations: Vaccination[];
+}
+
+type PetData = {
+  pname: string;
+  pbreed: string | null;
+  psex: string;
+  ptype: string | null;
+  page: string | null;
+  pnote: string | null;
+
+};
 
 const index = () => {
   const [searchText, setSearchText] = useState<string>("");
@@ -14,6 +59,11 @@ const index = () => {
   const [birthDay, setBirthDay] = useState('');
   const [note, setNote] = useState('');
 
+  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const [vaccinationModalVisible, setVaccinationModalVisible] = useState(false);
+  const [myPetsData, setMyPetsData] = useState<Pet[]>([]);
+  const [loading, setLoading] = useState(true);
+
 const pets = [
   { id: '1', name: 'Pedro', description: 'In sit proident', /* path: require('../../assets/images/pup01.jpg') */ },
   { id: '2', name: 'Ryan', description: 'Et qui velit', /* path: require('../../assets/images/pup02.jpg')  */},                    
@@ -24,6 +74,12 @@ const contacts = [
   { id: '1', name: 'Dr. Anna Jones', specialty: 'General Practitioner', rating: 4.5, /* path: require('../../assets/images/doc1.jpeg') */ },
   { id: '2', name: 'Dr. John Smith', specialty: 'Veterinarian', rating: 4.8, /* path: require('../../assets/images/doc2.jpeg') */ },
 ];
+
+useEffect(() => {
+  console.log('test');
+  getpetdata();
+}, []);
+
   
   const handleSearch = () => {
     console.log("Searching for:", searchText);
@@ -32,6 +88,14 @@ const contacts = [
   const handleAddPetPress = () => {
     setModalVisible(true);
   };
+
+
+  const getpetdata = async () => {
+    const mypet = await fetchPetsData();
+    console.log(mypet);
+    setMyPetsData(mypet);
+    setLoading(false);
+  }
 
   const handleCancel = () => {
     setModalVisible(false);
@@ -44,11 +108,31 @@ const contacts = [
     setNote('');
   };
 
-const handleSubmit = () => {
+
+const handleSubmit = async () => {
   // Handle form submission
   // Add new pet to the pets array or send to backend
   console.log('New Pet:', { petName, animalType, breed, sex, birthDay, note });
+  const userJSON = await AsyncStorage.getItem('user');
+  if(userJSON) {
+    const user = JSON.parse(userJSON);
+    const petData = {
+      userid:user.id,
+      pname:petName,
+      ptype:animalType,
+      pbreed:breed,
+      psex:sex,
+      page:birthDay,
+      pnote:note,
+    }
+    addpet(petData);
+
+
+  }
+
   setModalVisible(false);
+
+
   // Reset form
   setPetName('');
   setAnimalType('');
@@ -57,6 +141,16 @@ const handleSubmit = () => {
   setBirthDay('');
   setNote('');
 };
+
+const renderPetSkeleton = () => (
+  <ContentLoader viewBox="0 0 400 100">
+    <Circle cx="50" cy="50" r="30" />
+    <Rect x="100" y="20" rx="4" ry="4" width="250" height="13" />
+    <Rect x="100" y="40" rx="3" ry="3" width="200" height="10" />
+    <Rect x="100" y="60" rx="3" ry="3" width="150" height="10" />
+  </ContentLoader>
+);
+
 
 
   return (
@@ -97,23 +191,37 @@ const handleSubmit = () => {
       <View style={styles.petsSection}>
         <View style={styles.petsHeader}>
           <Text style={styles.sectionTitle}>My Pets</Text>
+
+          <ReminderButton pets={myPetsData} />
+
           <TouchableOpacity style={styles.addPetButton} onPress={handleAddPetPress}>
             <FontAwesome name="plus" size={16} color="white" />
             <Text style={styles.addPetButtonText}>Add My Pet</Text>
           </TouchableOpacity>
         </View>
-        {pets.map(pet => (
-          <TouchableOpacity key={pet.id} style={styles.petCard}>
-            <Image
-              source={pet.path}               /* ****************************************************Awulak Thiyenwa  */
-              style={styles.petImage}
-            />
-            <View style={styles.petInfo}>
-              <Text style={styles.petName}>{pet.name}</Text>
-              <Text style={styles.petDescription}>{pet.description}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+
+        {loading ? (
+          renderPetSkeleton()
+        ) : myPetsData.length === 0 ? (
+          <Text style={styles.noPetsText}>No Pet to show, add some pet</Text>
+        ) : (
+          <FlatList
+            data={myPetsData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.petCard} onPress={() => {}
+              // handlePetPress(item)
+              }>
+                <View style={styles.petTextContainer}>
+                  <Text style={styles.petName}>{item.name}</Text>
+                  <Text style={styles.petStatus}>{item.status}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            scrollEnabled={false}
+          />
+        )}
+
       </View>
 
       {/* Last Contact Section */}
@@ -122,7 +230,9 @@ const handleSubmit = () => {
         {contacts.map(contact => (
           <TouchableOpacity key={contact.id} style={styles.doctorCard}>
             <Image
-              source={contact.path}         /* ****************************************************Awulak Thiyenwa  */
+
+              // source={contact.path}         /* ****************************************************Awulak Thiyenwa  */
+
               style={styles.profileIcon}
             />
             <View style={styles.doctorInfo}>
@@ -226,6 +336,20 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
+
+  petTextContainer: {
+    marginLeft: 16,
+  },
+  petStatus: {
+    fontSize: 14,
+    color: "gray",
+  },
+  noPetsText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 16,
+  },
+
   profileName: {
     marginLeft: 10,
     fontSize: 18,

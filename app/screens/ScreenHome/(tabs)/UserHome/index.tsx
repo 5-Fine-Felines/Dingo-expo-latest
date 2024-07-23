@@ -1,30 +1,83 @@
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Image, Modal, Button } from 'react-native';
-import React, { useState } from "react";
-import { Stack } from "expo-router";
-import SearchBar from "../../components/common/SearchBar";
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, RefreshControl } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Stack } from 'expo-router';
+import SearchBar from '../../components/common/SearchBar';
+import { FontAwesome } from '@expo/vector-icons';
+import fetchPetsData from '@/app/functions/petOption/getownerpet';
+import ContentLoader, { Circle, Rect } from 'react-content-loader/native';
+import getReminders from '@/app/functions/reminderOption/getreminder';
+
+interface Vaccination {
+  name: string;
+  date: string;
+  status: string;
+}
 
 interface Pet {
   id: string;
   name: string;
   status: string;
-  /* imagePath: any; */ ///////////////////////////////Keeeeeeeeeeeeeeep eyes on thissssssssssssssss/////////////
   breed: string;
   birthday: string;
   age: string;
   vaccinationDetails: string;
   notes: string;
-  vaccinations: { name: string; date: string; status: string }[];
+  vaccinations: Vaccination[];
 }
 
-const index = () => {
-  const [searchText, setSearchText] = useState<string>("");
+interface Reminder {
+  expectdate: string;
+  expecttime: string;
+  remid: number;
+  created_at: string;
+  remtitle: string;
+  remtype: string;
+  remcalanderlink: string;
+  userid: string;
+  petid: string;
+}
+
+const Index = () => {
+  const [searchText, setSearchText] = useState<string>('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const [vaccinationModalVisible, setVaccinationModalVisible] = useState(false);
+  const [myPetsData, setMyPetsData] = useState<Pet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [remindersLoading, setRemindersLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setRemindersLoading(true);
+
+      const [pets, remindersData] = await Promise.all([fetchPetsData(), getReminders()]);
+
+      setMyPetsData(pets);
+      setReminders(remindersData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+      setRemindersLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  }, []);
 
   const handleSearch = () => {
-    console.log("Searching for:", searchText);
+    console.log('Searching for:', searchText);
   };
 
   const handlePetPress = (pet: Pet) => {
@@ -35,6 +88,7 @@ const index = () => {
   const handleCloseModal = () => {
     setModalVisible(false);
     setSelectedPet(null);
+
   };
 
   const handleVaccinationPress = () => {
@@ -45,189 +99,136 @@ const index = () => {
     setVaccinationModalVisible(false);
   };
 
-  const pets: Pet[] = [
-    {
-      id: "1",
-      name: "Pedro",
-      status: "In sit proident",
-      /*  imagePath: require('../../assets/images/pup01.jpg'),  */
-      breed: "Labrador",
-      birthday: "2020-01-15",
-      age: "4 years",
-      vaccinationDetails: "Rabies, DHPP",
-      notes: "Friendly and energetic",
-      vaccinations: [
-        { name: "Rabies", date: "2023-01-15", status: "Vaccinated" },
-        { name: "DHPP", date: "2023-02-20", status: "Vaccinated" },
-        { name: "Leptospirosis", date: "2024-03-20", status: "Pending" },
-      ],
-    },
-    {
-      id: "2",
-      name: "Ryan",
-      status: "Et qui velit",
-      /* imagePath: require('../../assets/images/pup02.jpg'), */
-      breed: "Golden Retriever",
-      birthday: "2019-06-20",
-      age: "5 years",
-      vaccinationDetails: "Rabies, DHPP, Leptospirosis",
-      notes: "Loves to play fetch",
-      vaccinations: [
-        { name: "Rabies", date: "2022-06-20", status: "Vaccinated" },
-        { name: "DHPP", date: "2023-07-22", status: "Vaccinated" },
-        { name: "Leptospirosis", date: "2024-08-01", status: "Pending" },
-      ],
-    },
-    {
-      id: "3",
-      name: "Brian",
-      status: "Elit ut qui duis",
-      /*  imagePath: require('../../assets/images/pup03.jpg'), */
-      breed: "Beagle",
-      birthday: "2021-08-25",
-      age: "3 years",
-      vaccinationDetails: "Rabies, DHPP",
-      notes: "Curious and playful",
-      vaccinations: [
-        { name: "Rabies", date: "2023-09-10", status: "Vaccinated" },
-        { name: "DHPP", date: "2023-10-15", status: "Vaccinated" },
-      ],
-    },
-  ];
+  const renderPetSkeleton = () => (
+    <ContentLoader viewBox="0 0 400 100">
+      <Circle cx="50" cy="50" r="30" />
+      <Rect x="100" y="20" rx="4" ry="4" width="250" height="13" />
+      <Rect x="100" y="40" rx="3" ry="3" width="200" height="10" />
+      <Rect x="100" y="60" rx="3" ry="3" width="150" height="10" />
+    </ContentLoader>
+  );
 
-  const reminders = [
-    { id: "1", title: "Doctor Appointment", type: "External" },
-    { id: "2", title: "Vaccine Reminder", type: "External" },
-  ];
+  const renderReminderSkeleton = () => (
+    <ContentLoader viewBox="0 0 400 50">
+      <Rect x="0" y="0" rx="5" ry="5" width="400" height="50" />
+      <Rect x="0" y="60" rx="5" ry="5" width="400" height="50" />
+      <Rect x="0" y="120" rx="5" ry="5" width="400" height="50" />
+    </ContentLoader>
+  );
 
   return (
     <View style={styles.container}>
-      {/* for the components */}
-      <View>
-        <SearchBar
-          searchText={searchText}
-          setSearchText={setSearchText}
-          handleSearch={handleSearch}
-        />
-        {/* Other components or content for UserHome */}
-      </View>
+      <Stack.Screen options={{ headerShown: false }} />
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <View>
+          <SearchBar searchText={searchText} setSearchText={setSearchText} handleSearch={handleSearch} />
+        </View>
 
-      <Text style={styles.heading}>My Pets</Text>
-      <FlatList
-        data={pets}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.petCard}
-            onPress={() => handlePetPress(item)}
-          >
-            {/* <Image source={item.imagePath} style={styles.petImage} /> */}
-            /////////////////////////////////////////////
-            <View style={styles.petTextContainer}>
-              <Text style={styles.petName}>{item.name}</Text>
-              <Text style={styles.petStatus}>{item.status}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-      <Text style={styles.remindersHeading}>Reminders</Text>
-      <FlatList
-        data={reminders}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.reminderItem}>
-            <Text style={styles.reminderTitle}>{item.title}</Text>
-            <View style={styles.reminderTypeContainer}>
-              <Text style={styles.reminderType}>{item.type}</Text>
-              <FontAwesome name="external-link" size={16} color="orange" />
-            </View>
-          </View>
-        )}
-      />
-
-      {/* Modal for Pet Details */}
-      {selectedPet && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={handleCloseModal}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              {/* <Image source={selectedPet.imagePath} style={styles.modalImage} /> */}{" "}
-              /////////////////////////////////////////////////////////
-              <Text style={styles.modalPetName}>{selectedPet.name}</Text>
-              <Text style={styles.modalPetDetails}>
-                Breed: {selectedPet.breed}
-              </Text>
-              <Text style={styles.modalPetDetails}>
-                Birthday: {selectedPet.birthday}
-              </Text>
-              <Text style={styles.modalPetDetails}>Age: {selectedPet.age}</Text>
-              {
-                <Text style={styles.modalPetDetails}>
-                  Vaccination Details: {selectedPet.vaccinationDetails}
-                </Text>
-              }
-              <Text style={styles.modalPetDetails}>
-                Notes: {selectedPet.notes}
-              </Text>
-              <TouchableOpacity
-                style={styles.vaccinationButton}
-                onPress={handleVaccinationPress}
-              >
-                <Text style={styles.vaccinationButtonText}>Vaccination</Text>
+        <Text style={styles.heading}>My Pets</Text>
+        {loading ? (
+          renderPetSkeleton()
+        ) : myPetsData.length === 0 ? (
+          <Text style={styles.noPetsText}>No Pet to show, add some pet</Text>
+        ) : (
+          <FlatList
+            data={myPetsData}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.petCard} onPress={() => handlePetPress(item)}>
+                <View style={styles.petTextContainer}>
+                  <Text style={styles.petName}>{item.name}</Text>
+                  <Text style={styles.petStatus}>{item.status}</Text>
+                </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleCloseModal}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      )}
+            )}
+            scrollEnabled={false}
+          />
+        )}
 
-      {/* Modal for Vaccination Details */}
-      {selectedPet && (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={vaccinationModalVisible}
-          onRequestClose={handleCloseVaccinationModal}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalHeading}>Vaccination Details</Text>
-              <FlatList
-                data={selectedPet.vaccinations}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <View style={styles.vaccinationItem}>
-                    <Text style={styles.vaccinationText}>
-                      Vaccine Name: {item.name}
-                    </Text>
-                    <Text style={styles.vaccinationText}>
-                      Date: {item.date}
-                    </Text>
-                    <Text style={styles.vaccinationText}>
-                      Status: {item.status}
-                    </Text>
+        <Text style={styles.remindersHeading}>Reminders</Text>
+        {remindersLoading ? (
+          renderReminderSkeleton()
+        ) : reminders.length === 0 ? (
+          <Text style={styles.noPetsText}>No reminders to show, add some reminders</Text>
+        ) : (
+          <FlatList
+            data={reminders}
+            keyExtractor={(item) => item.remid.toString()}
+            renderItem={({ item }) => (
+
+              <View style={styles.reminderItem}>
+                <View style={styles.reminderBox}>
+                  <Text style={styles.reminderTitle}>{item.remtitle}</Text>
+                  <View style={styles.reminderTypeContainer}>
+                    <Text style={styles.reminderType}>{item.remtype}</Text>
+                    <FontAwesome name="external-link" size={16} color="orange" />
                   </View>
-                )}
-              />
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={handleCloseVaccinationModal}
-              >
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
+                </View>
+                <View style={styles.reminderDateContainer}>
+                  <Text style={styles.reminderDate}>Date: {item.expectdate}</Text>
+                  <Text style={styles.reminderTime}>Time: {item.expecttime}</Text>
+
+                </View>
+              </View>
+            )}
+            scrollEnabled={false}
+          />
+        )}
+
+        {selectedPet && (
+          <Modal animationType="slide" transparent visible={modalVisible} onRequestClose={handleCloseModal}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalPetName}>{selectedPet.name}</Text>
+                <Text style={styles.modalPetDetails}>Breed: {selectedPet.breed}</Text>
+                <Text style={styles.modalPetDetails}>Birthday: {selectedPet.birthday}</Text>
+                <Text style={styles.modalPetDetails}>Age: {selectedPet.age}</Text>
+                <Text style={styles.modalPetDetails}>Vaccination Details: {selectedPet.vaccinationDetails}</Text>
+                <Text style={styles.modalPetDetails}>Notes: {selectedPet.notes}</Text>
+                <TouchableOpacity style={styles.vaccinationButton} onPress={handleVaccinationPress}>
+                  <Text style={styles.vaccinationButtonText}>Vaccination</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={handleCloseModal}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </Modal>
-      )}
+          </Modal>
+        )}
+
+        {selectedPet && (
+          <Modal
+            animationType="slide"
+            transparent
+            visible={vaccinationModalVisible}
+            onRequestClose={handleCloseVaccinationModal}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalHeading}>Vaccination Details</Text>
+                <FlatList
+                  data={selectedPet.vaccinations}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <View style={styles.vaccinationItem}>
+                      <Text style={styles.vaccinationText}>{item.name}</Text>
+                      <Text style={styles.vaccinationText}>{item.date}</Text>
+                      <Text style={styles.vaccinationText}>{item.status}</Text>
+                    </View>
+                  )}
+                  scrollEnabled={false}
+                />
+                <TouchableOpacity style={styles.closeButton} onPress={handleCloseVaccinationModal}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -235,114 +236,83 @@ const index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollViewContent: {
     padding: 16,
-    backgroundColor: "#f5f5f5",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  profileContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  profileName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  announcementButton: {
-    padding: 8,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-    gap: 10,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderTopLeftRadius: 5,
-    borderBottomLeftRadius: 5,
-    padding: 10,
-    marginHorizontal: 2,
-    backgroundColor: "white",
-  },
-  searchButton: {
-    height: 40,
-    width: 80,
-    backgroundColor: "orange",
-    justifyContent: "center",
-    alignItems: "center",
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
   },
   heading: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginVertical: 16,
   },
   petCard: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    backgroundColor: "white",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
     marginBottom: 8,
-    borderRadius: 5,
-  },
-  petImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginRight: 16,
   },
   petTextContainer: {
-    flex: 1,
+    marginLeft: 16,
   },
   petName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   petStatus: {
     fontSize: 14,
     color: "gray",
   },
+  noPetsText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginVertical: 16,
+  },
+  reminderBox: {
+    flexDirection: 'column'
+  },
   remindersHeading: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
-    marginVertical: 8,
+    marginTop: 20,
+    marginBottom: 8,
   },
   reminderItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: "white",
+    justifyContent:'space-between',
+    padding: 16,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
     marginBottom: 8,
-    borderRadius: 5,
   },
   reminderTitle: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "bold",
   },
   reminderTypeContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 8,
   },
   reminderType: {
     fontSize: 14,
     color: "gray",
-    marginRight: 4,
+    marginRight: 8,
+  },
+  reminderDateContainer: {
+
+  },
+  reminderDate: {
+    fontSize: 14,
+    fontWeight:'500',
+    alignSelf:'flex-end'
+  },
+  reminderTime: {
+    fontSize: 14,
+    fontWeight:'500',
+    alignSelf:'flex-end'
   },
   modalContainer: {
     flex: 1,
@@ -351,63 +321,55 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    width: "80%",
+    width: 300,
     padding: 20,
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: "center",
   },
-  modalImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 16,
-  },
   modalPetName: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 8,
+    marginBottom: 10,
   },
   modalPetDetails: {
     fontSize: 16,
-    marginBottom: 4,
+    marginBottom: 8,
   },
   vaccinationButton: {
-    marginTop: 10,
+    marginTop: 16,
+    padding: 12,
     backgroundColor: "orange",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 8,
   },
   vaccinationButtonText: {
     color: "white",
-    fontWeight: "bold",
     fontSize: 16,
+    fontWeight: "bold",
   },
   closeButton: {
-    marginTop: 10,
-    backgroundColor: "orange",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: "gray",
+    borderRadius: 8,
   },
   closeButtonText: {
     color: "white",
-    fontWeight: "bold",
     fontSize: 16,
+    fontWeight: "bold",
   },
   modalHeading: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   vaccinationItem: {
     marginBottom: 8,
   },
   vaccinationText: {
     fontSize: 16,
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#f5f5f5",
   },
 });
+
+export default Index;
+
