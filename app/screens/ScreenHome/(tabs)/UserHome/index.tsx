@@ -1,3 +1,4 @@
+
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal, ScrollView, RefreshControl } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Stack } from 'expo-router';
@@ -87,6 +88,7 @@ const Index = () => {
   const handleCloseModal = () => {
     setModalVisible(false);
     setSelectedPet(null);
+
   };
 
   const handleVaccinationPress = () => {
@@ -370,3 +372,4 @@ const styles = StyleSheet.create({
 });
 
 export default Index;
+

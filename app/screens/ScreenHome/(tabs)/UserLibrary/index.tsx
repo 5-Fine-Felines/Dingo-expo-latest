@@ -1,6 +1,8 @@
+
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, TextInput, FlatList } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
+
 import SearchBar from "../../components/common/SearchBar";
 import { Stack } from 'expo-router'
 import { Image } from 'expo-image';
@@ -77,6 +79,7 @@ useEffect(() => {
   console.log('test');
   getpetdata();
 }, []);
+
   
   const handleSearch = () => {
     console.log("Searching for:", searchText);
@@ -85,6 +88,7 @@ useEffect(() => {
   const handleAddPetPress = () => {
     setModalVisible(true);
   };
+
 
   const getpetdata = async () => {
     const mypet = await fetchPetsData();
@@ -103,6 +107,7 @@ useEffect(() => {
     setBirthDay('');
     setNote('');
   };
+
 
 const handleSubmit = async () => {
   // Handle form submission
@@ -127,6 +132,7 @@ const handleSubmit = async () => {
 
   setModalVisible(false);
 
+
   // Reset form
   setPetName('');
   setAnimalType('');
@@ -144,6 +150,7 @@ const renderPetSkeleton = () => (
     <Rect x="100" y="60" rx="3" ry="3" width="150" height="10" />
   </ContentLoader>
 );
+
 
 
   return (
@@ -184,12 +191,15 @@ const renderPetSkeleton = () => (
       <View style={styles.petsSection}>
         <View style={styles.petsHeader}>
           <Text style={styles.sectionTitle}>My Pets</Text>
+
           <ReminderButton pets={myPetsData} />
+
           <TouchableOpacity style={styles.addPetButton} onPress={handleAddPetPress}>
             <FontAwesome name="plus" size={16} color="white" />
             <Text style={styles.addPetButtonText}>Add My Pet</Text>
           </TouchableOpacity>
         </View>
+
         {loading ? (
           renderPetSkeleton()
         ) : myPetsData.length === 0 ? (
@@ -211,6 +221,7 @@ const renderPetSkeleton = () => (
             scrollEnabled={false}
           />
         )}
+
       </View>
 
       {/* Last Contact Section */}
@@ -219,7 +230,9 @@ const renderPetSkeleton = () => (
         {contacts.map(contact => (
           <TouchableOpacity key={contact.id} style={styles.doctorCard}>
             <Image
+
               // source={contact.path}         /* ****************************************************Awulak Thiyenwa  */
+
               style={styles.profileIcon}
             />
             <View style={styles.doctorInfo}>
@@ -323,6 +336,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
+
   petTextContainer: {
     marginLeft: 16,
   },
@@ -335,6 +349,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 16,
   },
+
   profileName: {
     marginLeft: 10,
     fontSize: 18,
