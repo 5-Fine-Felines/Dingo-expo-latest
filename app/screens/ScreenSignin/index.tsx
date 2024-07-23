@@ -65,10 +65,10 @@ const index = () => {
                     <ActivityIndicator size="large" color={Color.colorDarkorange} />
                 </View>
             )}
-            <Pressable onPress={() => {
+            <Pressable onPress={async () => {
                 setLoading(true);
-                router.push('../../screens/ScreenHome')
-                // await handleLogin();
+                // router.push('../../screens/ScreenHome')
+                await handleLogin();
                 setLoading(false);
             }} disabled={loading}>
                 <View style={[styles.rectangleParent]}>
