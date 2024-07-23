@@ -36,9 +36,9 @@ const index = () => {
                 contentFit="cover"
                 source={require("@/assets/images/oolzfw0removebgpreview-1.png")}
             />
-            <View>
+            <View style={{ zIndex:9999 }}>
             <TouchableOpacity onPress={() => {
-                router.replace("../../screens/ScreenSignin")
+                router.replace("/screens/ScreenSignin")
             }}>
                 <Image
                     style={styles.splashItem}
