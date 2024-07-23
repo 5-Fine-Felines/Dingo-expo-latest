@@ -1,7 +1,7 @@
-// import ScreenSplash from "./screens/ScreenSplash";
-// export default ScreenSplash;
+import ScreenSplash from "./screens/ScreenSplash";
+export default ScreenSplash;
 
-import damiIndex from "./damiIndex";
+// import damiIndex from "./damiIndex";
 
 
-export default damiIndex;
+// export default damiIndex;
