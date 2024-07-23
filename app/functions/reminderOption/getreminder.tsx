@@ -8,6 +8,8 @@ interface Reminder {
     remtitle: string;
     remtype: string;
     remcalanderlink: string;
+    expectdate:string;
+    expecttime:string;
     userid: string;
     petid: string;
 }

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Link, Slot, usePathname } from 'expo-router';
-import { View, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { useRouter, Slot, usePathname } from 'expo-router';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const pathNames = {
   LATESTUPDATE: '/screens/ScreenHome/(tabs)/UserSearch/(tabs)/LatestUpdateTab',
@@ -9,38 +9,49 @@ const pathNames = {
 };
 
 export default function Layout() {
+  const router = useRouter();
   const pathname = usePathname();
-  const [activePath, setActivePath] = useState(pathNames.LATESTUPDATE);
-  console.log(activePath);
-  
+  const [activePath, setActivePath] = useState<string>(pathNames.LATESTUPDATE);
+
+  useEffect(() => {
+    if (pathname !== pathNames.LATESTUPDATE) {
+      setActivePath(pathNames.LATESTUPDATE);
+      router.push(pathNames.LATESTUPDATE);
+    }
+  }, []);
+
+  const handlePress = (path: string) => {
+    setActivePath(path);
+    router.push(path);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.tabBar}>
-        <Link 
+        <TouchableOpacity 
           style={activePath === pathNames.LATESTUPDATE ? [styles.link, styles.activeLink] : styles.link}
-          href={pathNames.LATESTUPDATE}
+          onPress={() => handlePress(pathNames.LATESTUPDATE)}
         >
           <Text style={activePath === pathNames.LATESTUPDATE ? styles.activeText : styles.inactiveText}>
             Latest Update
           </Text>
-        </Link>
-        <Link 
+        </TouchableOpacity>
+        <TouchableOpacity 
           style={activePath === pathNames.CATEGORY ? [styles.link, styles.activeLink] : styles.link}
-          href={pathNames.CATEGORY}
+          onPress={() => handlePress(pathNames.CATEGORY)}
         >
           <Text style={activePath === pathNames.CATEGORY ? styles.activeText : styles.inactiveText}>
             Category
           </Text>
-        </Link>
-        <Link 
+        </TouchableOpacity>
+        <TouchableOpacity 
           style={activePath === pathNames.PRODUCT ? [styles.link, styles.activeLink] : styles.link}
-          href={pathNames.PRODUCT}
+          onPress={() => handlePress(pathNames.PRODUCT)}
         >
           <Text style={activePath === pathNames.PRODUCT ? styles.activeText : styles.inactiveText}>
             Products
           </Text>
-        </Link>
+        </TouchableOpacity>
       </View>
       <View style={styles.content}>
         <Slot />
@@ -52,28 +63,23 @@ export default function Layout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 8,
   },
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: '#ffffff',
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
   },
   link: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor:"red",
   },
   activeLink: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#8b0000', // Active tab border color
-    backgroundColor:"yellow",
+    backgroundColor: 'rgb(255, 254, 205)',
+    borderRadius: 20,
   },
   activeText: {
-    fontSize: 18,
-    color: '#ff0e0e', // Active text color
+    fontSize: 17,
     fontWeight: 'bold',
   },
   inactiveText: {

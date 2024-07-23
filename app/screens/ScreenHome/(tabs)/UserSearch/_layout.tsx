@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 
-export default function HomeLayout() {
+export default function UserSearchLayout() {
   return <Stack>
-  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+  <Stack.Screen name="(tabs)" options={{ headerShown: false }}  />
 </Stack> 
 }

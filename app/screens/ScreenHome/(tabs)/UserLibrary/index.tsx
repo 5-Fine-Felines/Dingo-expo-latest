@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import addpet from '@/app/functions/petOption/addpet';
 import ContentLoader, { Circle, Rect } from 'react-content-loader/native';
 import fetchPetsData from '@/app/functions/petOption/getownerpet';
+import ReminderButton from './ExtraComponent/AddReminder';
 
 type UserInfo = {
   email: string;
@@ -183,6 +184,7 @@ const renderPetSkeleton = () => (
       <View style={styles.petsSection}>
         <View style={styles.petsHeader}>
           <Text style={styles.sectionTitle}>My Pets</Text>
+          <ReminderButton pets={myPetsData} />
           <TouchableOpacity style={styles.addPetButton} onPress={handleAddPetPress}>
             <FontAwesome name="plus" size={16} color="white" />
             <Text style={styles.addPetButtonText}>Add My Pet</Text>

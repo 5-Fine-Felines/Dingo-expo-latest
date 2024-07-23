@@ -51,7 +51,7 @@ const fetchPetsData = async (): Promise<Pet[]> => {
           const formattedPet: Pet = {
             id: pet.pid,
             name: pet.name,
-            status: pet.status,
+            status: pet.species,
             breed: pet.breed,
             birthday: pet.birthday,
             age: pet.age,

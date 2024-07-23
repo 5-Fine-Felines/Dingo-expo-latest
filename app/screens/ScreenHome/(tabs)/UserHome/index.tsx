@@ -26,6 +26,8 @@ interface Pet {
 }
 
 interface Reminder {
+  expectdate: string;
+  expecttime: string;
   remid: number;
   created_at: string;
   remtitle: string;
@@ -154,11 +156,19 @@ const Index = () => {
             data={reminders}
             keyExtractor={(item) => item.remid.toString()}
             renderItem={({ item }) => (
+
               <View style={styles.reminderItem}>
-                <Text style={styles.reminderTitle}>{item.remtitle}</Text>
-                <View style={styles.reminderTypeContainer}>
-                  <Text style={styles.reminderType}>{item.remtype}</Text>
-                  <FontAwesome name="external-link" size={16} color="orange" />
+                <View style={styles.reminderBox}>
+                  <Text style={styles.reminderTitle}>{item.remtitle}</Text>
+                  <View style={styles.reminderTypeContainer}>
+                    <Text style={styles.reminderType}>{item.remtype}</Text>
+                    <FontAwesome name="external-link" size={16} color="orange" />
+                  </View>
+                </View>
+                <View style={styles.reminderDateContainer}>
+                  <Text style={styles.reminderDate}>Date: {item.expectdate}</Text>
+                  <Text style={styles.reminderTime}>Time: {item.expecttime}</Text>
+
                 </View>
               </View>
             )}
@@ -258,6 +268,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 16,
   },
+  reminderBox: {
+    flexDirection: 'column'
+  },
   remindersHeading: {
     fontSize: 24,
     fontWeight: "bold",
@@ -265,6 +278,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reminderItem: {
+    flexDirection: "row",
+    justifyContent:'space-between',
     padding: 16,
     backgroundColor: "#f5f5f5",
     borderRadius: 8,
@@ -283,6 +298,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "gray",
     marginRight: 8,
+  },
+  reminderDateContainer: {
+
+  },
+  reminderDate: {
+    fontSize: 14,
+    fontWeight:'500',
+    alignSelf:'flex-end'
+  },
+  reminderTime: {
+    fontSize: 14,
+    fontWeight:'500',
+    alignSelf:'flex-end'
   },
   modalContainer: {
     flex: 1,
