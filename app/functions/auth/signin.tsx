@@ -11,8 +11,6 @@ type UserInfo = {
   name: string | null;
   id: string;
   photo: string | null;
-
-
 };
 
 GoogleSignin.configure({
@@ -29,7 +27,6 @@ export default async function onGoogleButtonPress() {
   // Extract the user info
   const { idToken, user } = userInfo;
 
-  // const { email, name, id, photo } = user;
 
   // Create a Google credential with the token
   const googleCredential = auth.GoogleAuthProvider.credential(idToken);

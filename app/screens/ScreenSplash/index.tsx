@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     pawsitivelyUnforgettableCare: {
         top: 733,
         left: 11,
+        padding:40,
         fontSize: FontSize.size_xl,
         lineHeight: 26,
         fontFamily: FontFamily.fredokaOne,
